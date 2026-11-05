@@ -17,13 +17,42 @@ O Designeer é o catálogo curado do Dhruv Jaradi: galerias de inspiração, com
 
 Ele usa só o que o [`ai.txt`](https://designeer.xyz/ai.txt) do site libera pra IA: `/api/catalog`, as páginas `.md` e os arquivos estáticos. Não mexe em favoritos, pastas nem login.
 
-## Como fica na prática
+## Exemplos
 
-Tu manda um link de find:
+É só colar o link do Designeer no Claude Code (ou no Claude Desktop) e pedir em português mesmo. Ele escolhe as tools sozinho.
 
-> o que é isso? https://designeer.xyz/finds/andreaskruszaki-2115308820687950002
+### Recriar uma tela a partir de um find
 
-E o Claude responde com o que o `designeer_get` e o `designeer_media` trouxeram:
+**Prompt:**
+
+```text
+tenta fazer essa tela https://designeer.xyz/finds/designedforfun-2108922344152428589
+```
+
+**O que o Claude fez:**
+
+1. `designeer_get` → descobriu que é um motion do **Juls (@designedforfun)**: um widget de audiolivro que alterna entre o design final e o rascunho
+2. `designeer_media` com `frames: 4` → viu a sequência e entendeu a interação: o card gira em 3D no eixo Y, troca o conteúdo no meio do giro e a moldura muda de cor
+3. Escreveu a página com a mesma mecânica, mas com livros, autores e capas inventados
+
+**Resultado:** [`examples/widget-flip`](examples/widget-flip) (abre o `index.html` no navegador e clica em Result / Process)
+
+<table>
+  <tr>
+    <td align="center"><img src="examples/widget-flip/result.png" width="360" alt="Widget no estado Result: card de audiolivro com capa, play e barra de progresso"><br><sub><b>Result</b>: o design final</sub></td>
+    <td align="center"><img src="examples/widget-flip/process.png" width="360" alt="Widget no estado Process: rascunho manuscrito com placeholder de capa"><br><sub><b>Process</b>: o rascunho</sub></td>
+  </tr>
+</table>
+
+### Entender um find
+
+**Prompt:**
+
+```text
+o que é isso? https://designeer.xyz/finds/andreaskruszaki-2115308820687950002
+```
+
+**Resultado:** o Claude explica que é uma animação 3D de um sachê de matcha que cai, rasga, explode em pó e revela a frase final, e entrega os dados que o `designeer_get` trouxe:
 
 ```jsonc
 {
@@ -40,6 +69,31 @@ E o Claude responde com o que o `designeer_get` e o `designeer_media` trouxeram:
 ```
 
 Junto vêm o still do vídeo e, com `frames: 4`, a sequência do movimento como imagem, então o Claude **vê** a animação e consegue explicar ou recriar a técnica.
+
+### Mais prompts pra testar
+
+```text
+me acha 5 referências de dashboard escuro no designeer
+```
+
+```text
+quais fontes o designeer tem pra landing page de fintech?
+```
+
+```text
+pega a paleta desse find e monta os tokens CSS pro meu projeto:
+https://designeer.xyz/finds/<slug-do-find>
+```
+
+```text
+abre o site do Linear e me dá o card de pricing em HTML + CSS
+```
+
+```text
+me mostra os finds de motion dessa semana e faz um resumo de cada técnica
+```
+
+> **Dica:** pra recriar algo, peça a **técnica** com conteúdo teu. A mecânica de uma animação é livre pra estudar; capa, logo, marca e texto do autor não.
 
 ## Tools
 

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Widget Flip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Caveat:wght@500;700&family=Gelasio:wght@600&display=swap">
+<style>
+/* Layout: palco central com perspectiva; o frame gira em Y e troca de "Result" pra "Process" no meio do giro */
+:root{
+  --bg:#F4F4F2; --fg:#1E1E1C; --muted:#8C8B86; --line:#E2E1DD;
+  --frame-result:#B8B7B2; --frame-process:#2A2A28;
+  --card:#F2F1EE; --card-fg:#2A2A28; --track:#CFCDC7; --fill:#55534D;
+  --seg-bg:#E7E6E2; --seg-on:#FFFFFF; --paper:#F5F7F7; --ink:#3A3935; --pencil:#9A988F;
+  --display:"Inter Tight",ui-sans-serif,system-ui,sans-serif;
+  --hand:"Caveat","Segoe Print","Comic Sans MS",cursive;
+  --cover-serif:"Gelasio",Georgia,serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141413; --fg:#EDECE8; --muted:#8A8983; --line:#2A2A28;
+  --frame-result:#5C5B57; --frame-process:#0B0B0A;
+  --card:#E9E8E4; --card-fg:#232321; --track:#C9C7C1; --fill:#4B4944;
+  --seg-bg:#232321; --seg-on:#3A3936; --paper:#ECEFEF; --ink:#33322E; --pencil:#8F8D84; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141413; --fg:#EDECE8; --muted:#8A8983; --line:#2A2A28;
+  --frame-result:#5C5B57; --frame-process:#0B0B0A;
+  --card:#E9E8E4; --card-fg:#232321; --track:#C9C7C1; --fill:#4B4944;
+  --seg-bg:#232321; --seg-on:#3A3936; --paper:#ECEFEF; --ink:#33322E; --pencil:#8F8D84; color-scheme:dark}
+html,body{height:100%}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--display);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;align-items:center;justify-content:center}
+main{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;gap:32px;padding-block:40px}
+.stage{width:100%;perspective:1400px;display:flex;justify-content:center}
+.frame{width:min(100%,440px);aspect-ratio:1/1;border-radius:32px;background:var(--frame-result);
+  display:grid;place-items:center;transform-style:preserve-3d;
+  box-shadow:0 0 0 8px color-mix(in srgb,var(--fg) 4%,transparent),0 30px 60px -30px rgba(0,0,0,.35);
+  transition:background-color .01s;will-change:transform}
+.frame.process{background:var(--frame-process)}
+.widget{width:64%;aspect-ratio:1/1;border-radius:28px;background:var(--card);color:var(--card-fg);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:7% 8% 8%;gap:6px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 10px 24px -14px rgba(0,0,0,.4)}
+.w-title{font-weight:600;font-size:clamp(15px,4.4vw,20px);letter-spacing:-.01em;text-align:center;line-height:1.1}
+.w-author{color:#8f8d87;font-size:clamp(12px,3.4vw,15px);margin-top:2px}
+.cover{width:42%;aspect-ratio:2/3;border-radius:3px;position:relative;overflow:hidden;
+  box-shadow:0 6px 14px -6px rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:space-between;padding:9px}
+.cover b{font-family:var(--cover-serif);font-size:clamp(9px,2.4vw,12px);line-height:1;color:#1d2a1f}
+.cover small{font-family:var(--cover-serif);font-size:clamp(7px,1.9vw,9px);color:#E9EFE8;position:relative;z-index:1}
+.c1{background:radial-gradient(circle at 74% 52%,#E3B23C 0 18%,transparent 23%),linear-gradient(160deg,#D9D3B8 0 48%,#86A07B 48% 70%,#3F5D45 70%)}
+.c2{background:radial-gradient(circle at 30% 30%,#DDE6EC 0 12%,transparent 13%),linear-gradient(180deg,#1F2A44 0 55%,#C2553D 55% 60%,#1F2A44 60%)}
+.c2 b,.c2 small{color:#DDE6EC}
+.player{width:100%;display:flex;align-items:center;gap:10px}
+.play{width:22px;height:22px;border:0;background:none;padding:0;cursor:pointer;color:var(--card-fg);flex:none;border-radius:4px}
+.play:focus-visible{outline:2px solid var(--fill);outline-offset:3px}
+.bar{flex:1;height:5px;border-radius:9px;background:var(--track);overflow:hidden}
+.bar i{display:block;height:100%;width:38%;background:var(--fill);border-radius:inherit}
+.time{font-size:clamp(12px,3.4vw,15px);font-variant-numeric:tabular-nums;color:#55534d;white-space:nowrap}
+/* rascunho */
+.draft{background:var(--paper);color:var(--ink);font-family:var(--hand);
+  background-image:repeating-linear-gradient(0deg,transparent 0 21px,rgba(60,60,55,.07) 21px 22px)}
+.draft .w-title{font-family:var(--hand);font-weight:700;font-size:clamp(18px,5vw,24px)}
+.draft .w-author{font-family:var(--hand);color:var(--pencil);font-size:clamp(15px,4vw,19px)}
+.ph{width:46%;aspect-ratio:2/3;border:1.5px dashed var(--pencil);border-radius:4px;position:relative;
+  background:linear-gradient(to top right,transparent calc(50% - 1px),var(--pencil) 50%,transparent calc(50% + 1px)),
+             linear-gradient(to top left,transparent calc(50% - 1px),var(--pencil) 50%,transparent calc(50% + 1px))}
+.pill{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%) rotate(-2deg);white-space:nowrap;
+  background:var(--paper);border:1.5px solid var(--ink);border-radius:99px;padding:1px 10px;font-size:clamp(14px,3.8vw,18px)}
+.note{font-size:clamp(13px,3.4vw,16px);color:var(--pencil);text-align:center;line-height:1}
+.note::before{content:"↑ "}
+/* controle */
+.seg{display:flex;padding:4px;border-radius:99px;background:var(--seg-bg);position:relative}
+.seg button{position:relative;z-index:1;border:0;background:none;font:500 14px var(--display);color:var(--muted);
+  padding:9px 26px;border-radius:99px;cursor:pointer;transition:color .25s}
+.seg button[aria-pressed="true"]{color:var(--fg)}
+.seg button:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.thumb{position:absolute;top:4px;bottom:4px;left:4px;border-radius:99px;background:var(--seg-on);
+  box-shadow:0 1px 3px rgba(0,0,0,.12);transition:transform .35s cubic-bezier(.3,.7,.2,1)}
+footer{width:min(100%,440px);display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;
+  border-top:1px solid var(--line);padding-top:14px}
+footer strong{font-weight:600;font-size:15px}
+footer span{color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){.thumb,.seg button{transition:none}}
+</style>
+
+</head>
+<body>
+<main>
+  <div class="stage">
+    <div class="frame" id="frame"></div>
+  </div>
+  <div class="seg" role="group" aria-label="Versão do widget">
+    <span class="thumb" id="thumb"></span>
+    <button id="btn-result" aria-pressed="true">Result</button>
+    <button id="btn-process" aria-pressed="false">Process</button>
+  </div>
+  <footer>
+    <strong>Widget de audiolivro</strong>
+    <span>Estudo de interação · ref. Juls no Designeer</span>
+  </footer>
+</main>
+
+<script>
+const books={
+  result:{title:"Verão de Vagalumes",author:"Helena Prates",cover:"c1",time:"6h 12m"},
+  process:{title:"O Corredor Azul",author:"Tomás Leiria"}
+};
+const frame=document.getElementById("frame");
+const btnR=document.getElementById("btn-result"),btnP=document.getElementById("btn-process"),thumb=document.getElementById("thumb");
+let mode="result",playing=false,progress=38,busy=false;
+const playIcon='<svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 4l15 8-15 8z" fill="currentColor"/></svg>';
+const pauseIcon='<svg viewBox="0 0 24 24" width="22" height="22"><rect x="5" y="4" width="5" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="5" height="16" rx="1" fill="currentColor"/></svg>';
+
+function render(){
+  frame.classList.toggle("process",mode==="process");
+  if(mode==="result"){
+    const b=books.result;
+    frame.innerHTML=`<div class="widget">
+      <div style="text-align:center"><div class="w-title">${b.title}</div><div class="w-author">${b.author}</div></div>
+      <div class="cover ${b.cover}"><b>Verão de<br>Vagalumes</b><small>Helena Prates</small></div>
+      <div class="player"><button class="play" id="play" aria-label="${playing?"Pausar":"Tocar"}">${playing?pauseIcon:playIcon}</button>
+      <div class="bar"><i id="fill" style="width:${progress}%"></i></div><span class="time" id="time">${left()}</span></div></div>`;
+    document.getElementById("play").onclick=togglePlay;
+  }else{
+    const b=books.process;
+    frame.innerHTML=`<div class="widget draft">
+      <div style="text-align:center"><div class="w-title">${b.title}</div><div class="w-author">${b.author}</div></div>
+      <div class="ph"><span class="pill">6h 12m left</span></div>
+      <div class="note">tempo em cima da capa? ou barra?</div></div>`;
+  }
+}
+function left(){const total=10*60;const m=Math.round(total*(1-progress/100));return `${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`}
+function togglePlay(){playing=!playing;render()}
+setInterval(()=>{if(playing&&mode==="result"){progress=Math.min(100,progress+.25);
+  const f=document.getElementById("fill"),t=document.getElementById("time");if(f){f.style.width=progress+"%";t.textContent=left()}
+  if(progress>=100){playing=false;render()}}},120);
+
+function moveThumb(){const b=mode==="result"?btnR:btnP;thumb.style.width=b.offsetWidth+"px";thumb.style.transform=`translateX(${b.offsetLeft-4}px)`}
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function setMode(next){
+  if(next===mode||busy)return;
+  btnR.setAttribute("aria-pressed",next==="result");btnP.setAttribute("aria-pressed",next==="process");
+  const dir=next==="process"?1:-1;
+  mode=next;moveThumb();
+  if(reduce){render();return}
+  busy=true;
+  const out=frame.animate([{transform:"rotateY(0) rotateX(0) scale(1)"},{transform:`rotateY(${90*dir}deg) rotateX(6deg) scale(.92)`}],
+    {duration:280,easing:"cubic-bezier(.5,0,.9,.5)",fill:"forwards"});
+  out.onfinish=()=>{render();
+    const inn=frame.animate([{transform:`rotateY(${-90*dir}deg) rotateX(6deg) scale(.92)`},{transform:`rotateY(${-8*dir}deg) rotateX(2deg) scale(1.01)`,offset:.7},{transform:"rotateY(0) rotateX(0) scale(1)"}],
+      {duration:520,easing:"cubic-bezier(.2,.7,.2,1)",fill:"forwards"});
+    inn.onfinish=()=>{inn.cancel();out.cancel();busy=false};};
+}
+btnR.onclick=()=>setMode("result");btnP.onclick=()=>setMode("process");
+addEventListener("resize",moveThumb);
+render();
+document.fonts?.ready.then(moveThumb);moveThumb();
+</script>
+
+</body>
+</html>
