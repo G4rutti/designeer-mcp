@@ -42,7 +42,7 @@ try to build this screen https://designeer.xyz/finds/designedforfun-210892234415
   </tr>
   <tr>
     <td align="center">
-      <video src="examples/widget-flip/video.mp4" width="400"></video><br>
+      <video src="https://github.com/user-attachments/assets/eca822fd-1dc0-45a5-a175-c23488e0aa41" width="400"></video><br>
       <a href="https://x.com/designedforfun/status/2108922344152428589">Original post on X</a>
     </td>
     <td align="center"><img src="examples/widget-flip/demo.gif" width="400" alt="Our widget flipping between Result and Process"></td>
