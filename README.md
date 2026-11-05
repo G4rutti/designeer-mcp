@@ -41,12 +41,9 @@ try to build this screen https://designeer.xyz/finds/designedforfun-210892234415
     <th width="50%">Result</th>
   </tr>
   <tr>
-    <td align="center" valign="middle">
-      <b>Audiobook progress</b> by Juls<br>
-      <sub>Result / Process toggle with a 3D flip</sub><br><br>
-      <a href="https://x.com/designedforfun/status/2108922344152428589">▶ Watch the original on X</a><br>
-      <a href="https://designeer.xyz/finds/designedforfun-2108922344152428589">View on Designeer</a><br><br>
-      <sub>Not embedded here: the video is the author's work and shows real book covers.</sub>
+    <td align="center">
+      <video src="https://cdn.designeer.xyz/finds/designedforfun-2108922344152428589/1.mp4" width="400"></video><br>
+      <a href="https://x.com/designedforfun/status/2108922344152428589">Original post on X</a>
     </td>
     <td align="center"><img src="examples/widget-flip/demo.gif" width="400" alt="Our widget flipping between Result and Process"></td>
   </tr>
