@@ -9,12 +9,6 @@ Search references, pull palettes as hex, watch motion frame by frame and copy co
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-3c873a?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/license-MIT-b5b5b5?style=flat-square)](LICENSE)
 
-<br>
-
-<img src="examples/widget-flip/demo.gif" width="640" alt="An audiobook widget that flips in 3D between its final design and its rough draft">
-
-<sub>Built by Claude from a single Designeer link. <a href="#rebuild-a-screen-from-a-find">See how ↓</a></sub>
-
 </div>
 
 ---
