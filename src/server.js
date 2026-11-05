@@ -13,7 +13,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { BASE, CDN, ChallengeError, getBinary, getBinaryHead, getJson, getText, isLiveBlocked } from "./http.js";
 import { findEntry, getIndex } from "./offline.js";
-import { capture, extractComponent } from "./capture.js";
+import { blockedMessage, capture, extractComponent } from "./capture.js";
 import {
   COLLECTIONS, canonical, kindOf, parseLinkList, parseNextCursor, parsePageMd, scoreEntry, slimItem, toPath,
 } from "./parse.js";
@@ -378,6 +378,12 @@ server.registerTool(
     try {
       const { target, via } = await resolveSite(url);
       const r = await capture({ url: target, mobile, maxHeight: max_height });
+      if (r.blocked) {
+        return ok(
+          { url: r.url, via_designeer: via, blocked: true, error: blockedMessage(r.blocked) },
+          r.tiles.map((buf) => ({ type: "image", data: buf.toString("base64"), mimeType: "image/jpeg" }))
+        );
+      }
       let saved;
       if (save) {
         const outDir = resolve(dir || MEDIA_DIR, "capture-" + slugHost(target));

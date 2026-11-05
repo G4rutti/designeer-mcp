@@ -2,6 +2,13 @@
 
 import { BASE } from "./http.js";
 
+/** Tira caracteres invisíveis (marcas de direção, zero-width, \p{Cf}) e espaços repetidos. */
+export function cleanText(v) {
+  if (v == null) return v;
+  const t = String(v).replace(/\p{Cf}/gu, "").replace(/\s+/g, " ").trim();
+  return t || null;
+}
+
 export const COLLECTIONS = ["inspiration", "resources", "tools", "portfolios"];
 
 /** Normaliza o que o usuário passar (URL completa, path, "tools/cursor", slug de find) num path canônico. */
@@ -28,7 +35,7 @@ export function kindOf(path) {
 export function parsePageMd(md, path) {
   const out = { canonical: canonical(path), kind: kindOf(path), fields: {}, related: [] };
   const title = md.match(/^#\s+(.+)$/m);
-  if (title) out.title = title[1].trim();
+  if (title) out.title = cleanText(title[1]);
   // Blockquote inteiro (pode ter várias linhas) = resumo / legenda do post
   const quote = md.match(/^(?:>[^\n]*(?:\n|$))+/m);
   if (quote) {
@@ -53,7 +60,7 @@ export function parsePageMd(md, path) {
     const key = m[1].toLowerCase().replace(/\s+/g, "_");
     const rawVal = m[2];
     const link = rawVal.match(/\[([^\]]+)\]\(([^)\s]+)\)/);
-    out.fields[key] = link ? { text: link[1], url: link[2] } : rawVal;
+    out.fields[key] = link ? { text: cleanText(link[1]), url: link[2] } : cleanText(rawVal);
   }
 
   const colours = out.fields.colours;
@@ -62,7 +69,7 @@ export function parsePageMd(md, path) {
   const rel = md.split(/^## Related\s*$/m)[1];
   if (rel) {
     for (const m of rel.matchAll(/^- \[([^\]]+)\]\(([^)\s]+)\)(?:[ \t]+-[ \t]+(.+))?$/gm)) {
-      out.related.push({ name: m[1], url: m[2].replace(/\.md$/, ""), tagline: m[3] || null });
+      out.related.push({ name: cleanText(m[1]), url: m[2].replace(/\.md$/, ""), tagline: cleanText(m[3]) });
     }
   }
   return out;
@@ -73,7 +80,7 @@ export function parseLinkList(md) {
   const items = [];
   for (const m of md.matchAll(/^- \[([^\]]+)\]\((https:\/\/designeer\.xyz\/[^)\s]+)\)(?:[ \t]+-[ \t]+(.+))?$/gm)) {
     const url = m[2].replace(/\.md$/, "");
-    items.push({ name: m[1], url, path: toPath(url), tagline: m[3]?.trim() || null });
+    items.push({ name: cleanText(m[1]), url, path: toPath(url), tagline: cleanText(m[3]) });
   }
   return items;
 }
@@ -88,8 +95,8 @@ export function parseNextCursor(md) {
 export function slimItem(it) {
   const col = it.collectionSlug || null;
   return {
-    name: it.name,
-    tagline: it.tagline,
+    name: cleanText(it.name),
+    tagline: cleanText(it.tagline),
     collection: col,
     category: it.category?.name || null,
     category_slug: it.category?.slug || null,

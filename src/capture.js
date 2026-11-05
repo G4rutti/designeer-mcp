@@ -611,7 +611,30 @@ async function openPage(browser, { url, mobile, maxHeight, left, notes }) {
     }, maxHeight)
     .catch(() => {});
   await page.waitForTimeout(Math.min(700, left()));
-  return { ctx, page, width };
+  const blocked = await page.evaluate(detectBlock).catch(() => null);
+  return { ctx, page, width, blocked };
+}
+
+export function blockedMessage(b) {
+  return `O site barrou o navegador automático (${b.by}, título "${b.title}"). O que veio foi a tela de bloqueio, não o design do site. Tenta outra página do mesmo site, a versão mobile, ou abre no teu navegador e manda um print.`;
+}
+
+/**
+ * Página de bloqueio/desafio (Cloudflare, Akamai, captcha) no lugar do site.
+ * Sem isso, o capture devolvia o design da tela de erro como se fosse o do site.
+ */
+function detectBlock() {
+  const title = document.title || "";
+  const text = (document.body?.innerText || "").slice(0, 3000);
+  const checks = [
+    [/attention required|just a moment|um momento/i.test(title), "Cloudflare"],
+    [!!document.querySelector("#cf-error-details, #challenge-form, #cf-challenge-running, .cf-error-overview"), "Cloudflare"],
+    [/access denied/i.test(title) && /reference #/i.test(text), "Akamai"],
+    [/sorry, you have been blocked|verify you are human|checking your browser|enable javascript and cookies/i.test(text), "proteção anti-bot"],
+    [!!document.querySelector('iframe[src*="captcha"], iframe[src*="turnstile"], .g-recaptcha, .h-captcha'), "captcha"],
+  ];
+  const hit = checks.find(([ok]) => ok);
+  return hit ? { by: hit[1], title } : null;
 }
 
 const budget = (ms) => {
@@ -628,7 +651,11 @@ export async function capture({ url, mobile = false, maxHeight = 6000, tileHeigh
   const notes = [];
   const browser = await launch();
   try {
-    const { ctx, page, width } = await openPage(browser, { url, mobile, maxHeight, left, notes });
+    const { ctx, page, width, blocked } = await openPage(browser, { url, mobile, maxHeight, left, notes });
+    if (blocked) {
+      const shot = await page.screenshot({ type: "jpeg", quality: 70 });
+      return { blocked, url: page.url(), width, tiles: [shot], notes, ms: Date.now() - t0 };
+    }
     const design = await page.evaluate(readDesign);
     const structure = await page.evaluate(readStructure).catch((e) => ({ error: e.message.split("\n")[0] }));
     const fullHeight = await page.evaluate(() => Math.max(document.body.scrollHeight, document.documentElement.scrollHeight));
@@ -657,7 +684,8 @@ export async function extractComponent({ url, selector, text, kind, mobile = fal
   const notes = [];
   const browser = await launch();
   try {
-    const { page } = await openPage(browser, { url, mobile, maxHeight: 6000, left, notes });
+    const { page, blocked } = await openPage(browser, { url, mobile, maxHeight: 6000, left, notes });
+    if (blocked) return { error: blockedMessage(blocked), notes };
     const out = await page.evaluate(serializeComponent, { selector, text, kind, maxNodes });
     if (out.error) return { error: out.error, notes };
     const loc = page.locator(out.pick).first();
