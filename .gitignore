@@ -1,0 +1,4 @@
+node_modules/
+designeer-media/
+*.bak
+.DS_Store

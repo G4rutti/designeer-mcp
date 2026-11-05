@@ -1,0 +1,41 @@
+{
+  "name": "designeer-mcp",
+  "version": "0.1.0",
+  "description": "MCP server do Designeer (designeer.xyz): busca, listings, finds e mídia de referência",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "check": "node src/check.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "designeer",
+    "design",
+    "claude",
+    "ui",
+    "inspiration"
+  ],
+  "author": "Davi Garutti <davigarutti5@gmail.com> (https://github.com/G4rutti)",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "playwright-core": "^1.63.0",
+    "zod": "^3.25.76"
+  },
+  "type": "module",
+  "bin": {
+    "designeer-mcp": "src/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/G4rutti/designeer-mcp.git"
+  },
+  "homepage": "https://github.com/G4rutti/designeer-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/G4rutti/designeer-mcp/issues"
+  }
+}
