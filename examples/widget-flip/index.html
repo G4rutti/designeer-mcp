@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Caveat:wght@500;700&family=Gelasio:wght@600&display=swap">
 <style>
-/* Layout: palco central com perspectiva; o frame gira em Y e troca de "Result" pra "Process" no meio do giro */
+/* Layout: centered stage with perspective; the frame spins on Y and swaps Result/Process halfway through */
 :root{
   --bg:#F4F4F2; --fg:#1E1E1C; --muted:#8C8B86; --line:#E2E1DD;
   --frame-result:#B8B7B2; --frame-process:#2A2A28;
@@ -57,7 +57,7 @@ main{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:c
 .bar{flex:1;height:5px;border-radius:9px;background:var(--track);overflow:hidden}
 .bar i{display:block;height:100%;width:38%;background:var(--fill);border-radius:inherit}
 .time{font-size:clamp(12px,3.4vw,15px);font-variant-numeric:tabular-nums;color:#55534d;white-space:nowrap}
-/* rascunho */
+/* draft */
 .draft{background:var(--paper);color:var(--ink);font-family:var(--hand);
   background-image:repeating-linear-gradient(0deg,transparent 0 21px,rgba(60,60,55,.07) 21px 22px)}
 .draft .w-title{font-family:var(--hand);font-weight:700;font-size:clamp(18px,5vw,24px)}
@@ -69,7 +69,7 @@ main{width:100%;max-width:520px;display:flex;flex-direction:column;align-items:c
   background:var(--paper);border:1.5px solid var(--ink);border-radius:99px;padding:1px 10px;font-size:clamp(14px,3.8vw,18px)}
 .note{font-size:clamp(13px,3.4vw,16px);color:var(--pencil);text-align:center;line-height:1}
 .note::before{content:"↑ "}
-/* controle */
+/* toggle */
 .seg{display:flex;padding:4px;border-radius:99px;background:var(--seg-bg);position:relative}
 .seg button{position:relative;z-index:1;border:0;background:none;font:500 14px var(--display);color:var(--muted);
   padding:9px 26px;border-radius:99px;cursor:pointer;transition:color .25s}
@@ -90,21 +90,21 @@ footer span{color:var(--muted);font-size:13px}
   <div class="stage">
     <div class="frame" id="frame"></div>
   </div>
-  <div class="seg" role="group" aria-label="Versão do widget">
+  <div class="seg" role="group" aria-label="Widget version">
     <span class="thumb" id="thumb"></span>
     <button id="btn-result" aria-pressed="true">Result</button>
     <button id="btn-process" aria-pressed="false">Process</button>
   </div>
   <footer>
-    <strong>Widget de audiolivro</strong>
-    <span>Estudo de interação · ref. Juls no Designeer</span>
+    <strong>Audiobook widget</strong>
+    <span>Interaction study · ref. Juls on Designeer</span>
   </footer>
 </main>
 
 <script>
 const books={
-  result:{title:"Verão de Vagalumes",author:"Helena Prates",cover:"c1",time:"6h 12m"},
-  process:{title:"O Corredor Azul",author:"Tomás Leiria"}
+  result:{title:"Summer of Fireflies",author:"Helena Prates",cover:"c1",time:"6h 12m"},
+  process:{title:"The Blue Hallway",author:"Tomás Leiria"}
 };
 const frame=document.getElementById("frame");
 const btnR=document.getElementById("btn-result"),btnP=document.getElementById("btn-process"),thumb=document.getElementById("thumb");
@@ -118,8 +118,8 @@ function render(){
     const b=books.result;
     frame.innerHTML=`<div class="widget">
       <div style="text-align:center"><div class="w-title">${b.title}</div><div class="w-author">${b.author}</div></div>
-      <div class="cover ${b.cover}"><b>Verão de<br>Vagalumes</b><small>Helena Prates</small></div>
-      <div class="player"><button class="play" id="play" aria-label="${playing?"Pausar":"Tocar"}">${playing?pauseIcon:playIcon}</button>
+      <div class="cover ${b.cover}"><b>Summer of<br>Fireflies</b><small>Helena Prates</small></div>
+      <div class="player"><button class="play" id="play" aria-label="${playing?"Pause":"Play"}">${playing?pauseIcon:playIcon}</button>
       <div class="bar"><i id="fill" style="width:${progress}%"></i></div><span class="time" id="time">${left()}</span></div></div>`;
     document.getElementById("play").onclick=togglePlay;
   }else{
@@ -127,7 +127,7 @@ function render(){
     frame.innerHTML=`<div class="widget draft">
       <div style="text-align:center"><div class="w-title">${b.title}</div><div class="w-author">${b.author}</div></div>
       <div class="ph"><span class="pill">6h 12m left</span></div>
-      <div class="note">tempo em cima da capa? ou barra?</div></div>`;
+      <div class="note">time on the cover? or a bar?</div></div>`;
   }
 }
 function left(){const total=10*60;const m=Math.round(total*(1-progress/100));return `${Math.floor(m/60)}h ${String(m%60).padStart(2,"0")}m`}

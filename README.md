@@ -2,57 +2,73 @@
 
 # designeer-mcp
 
-**O catálogo do [Designeer](https://designeer.xyz) direto no teu Claude.**
-Busca referência, puxa a paleta em hex, assiste o motion frame a frame e copia componente como HTML + CSS, sem sair da conversa.
+**The [Designeer](https://designeer.xyz) catalog, right inside Claude.**
+Search references, pull palettes as hex, watch motion frame by frame and copy components as HTML + CSS without leaving the chat.
 
 [![MCP](https://img.shields.io/badge/MCP-server-1f1f1f?style=flat-square)](https://modelcontextprotocol.io)
 [![Node](https://img.shields.io/badge/node-%E2%89%A518-3c873a?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/license-MIT-b5b5b5?style=flat-square)](LICENSE)
 
+<br>
+
+<img src="examples/widget-flip/demo.gif" width="640" alt="An audiobook widget that flips in 3D between its final design and its rough draft">
+
+<sub>Built by Claude from a single Designeer link. <a href="#rebuild-a-screen-from-a-find">See how ↓</a></sub>
+
 </div>
 
 ---
 
-O Designeer é o catálogo curado do Dhruv Jaradi: galerias de inspiração, componentes, fontes, ferramentas, portfolios e os **finds**, trabalhos de motion e interface garimpados do X. Esse servidor MCP transforma tudo isso em ferramentas que o Claude (ou qualquer cliente MCP) chama sozinho.
+Designeer is Dhruv Jaradi's curated catalog of inspiration galleries, components, fonts, tools, portfolios and **finds**: motion and interface work picked from X. This MCP server turns all of it into tools that Claude (or any MCP client) calls on its own.
 
-Ele usa só o que o [`ai.txt`](https://designeer.xyz/ai.txt) do site libera pra IA: `/api/catalog`, as páginas `.md` e os arquivos estáticos. Não mexe em favoritos, pastas nem login.
+It only uses what the site's [`ai.txt`](https://designeer.xyz/ai.txt) allows for AI: `/api/catalog`, the `.md` pages and static files. It never touches bookmarks, folders or login.
 
-## Exemplos
+## Examples
 
-É só colar o link do Designeer no Claude Code (ou no Claude Desktop) e pedir em português mesmo. Ele escolhe as tools sozinho.
+Paste a Designeer link into Claude Code (or Claude Desktop) and ask in plain language, in any language. Claude picks the tools by itself.
 
-### Recriar uma tela a partir de um find
+### Rebuild a screen from a find
 
-**Prompt:**
+**Prompt**
 
 ```text
-tenta fazer essa tela https://designeer.xyz/finds/designedforfun-2108922344152428589
+try to build this screen https://designeer.xyz/finds/designedforfun-2108922344152428589
 ```
 
-**O que o Claude fez:**
+**What Claude did**
 
-1. `designeer_get` → descobriu que é um motion do **Juls (@designedforfun)**: um widget de audiolivro que alterna entre o design final e o rascunho
-2. `designeer_media` com `frames: 4` → viu a sequência e entendeu a interação: o card gira em 3D no eixo Y, troca o conteúdo no meio do giro e a moldura muda de cor
-3. Escreveu a página com a mesma mecânica, mas com livros, autores e capas inventados
-
-**Resultado:** [`examples/widget-flip`](examples/widget-flip) (abre o `index.html` no navegador e clica em Result / Process)
+1. `designeer_get` found that it's a motion piece by **Juls ([@designedforfun](https://x.com/designedforfun))**: an audiobook widget that switches between the final design and the rough draft.
+2. `designeer_media` with `frames: 4` showed the sequence, so Claude could work out the interaction: the card spins on the Y axis, swaps content halfway through the turn, and the frame changes color.
+3. Claude wrote a page with the same mechanic, using made-up books, authors and covers.
 
 <table>
   <tr>
-    <td align="center"><img src="examples/widget-flip/result.png" width="360" alt="Widget no estado Result: card de audiolivro com capa, play e barra de progresso"><br><sub><b>Result</b>: o design final</sub></td>
-    <td align="center"><img src="examples/widget-flip/process.png" width="360" alt="Widget no estado Process: rascunho manuscrito com placeholder de capa"><br><sub><b>Process</b>: o rascunho</sub></td>
+    <th width="50%">Inspiration</th>
+    <th width="50%">Result</th>
+  </tr>
+  <tr>
+    <td align="center" valign="middle">
+      <b>Audiobook progress</b> by Juls<br>
+      <sub>Result / Process toggle with a 3D flip</sub><br><br>
+      <a href="https://x.com/designedforfun/status/2108922344152428589">▶ Watch the original on X</a><br>
+      <a href="https://designeer.xyz/finds/designedforfun-2108922344152428589">View on Designeer</a><br><br>
+      <sub>Not embedded here: the video is the author's work and shows real book covers.</sub>
+    </td>
+    <td align="center"><img src="examples/widget-flip/demo.gif" width="400" alt="Our widget flipping between Result and Process"></td>
   </tr>
 </table>
 
-### Entender um find
+Run it yourself: open [`examples/widget-flip/index.html`](examples/widget-flip/index.html) in a browser and click **Result / Process**. There's also an [MP4](examples/widget-flip/demo.mp4) and still frames of each state ([Result](examples/widget-flip/result.png), [Process](examples/widget-flip/process.png)).
 
-**Prompt:**
+### Understand a find
+
+**Prompt**
 
 ```text
-o que é isso? https://designeer.xyz/finds/andreaskruszaki-2115308820687950002
+what is this? https://designeer.xyz/finds/andreaskruszaki-2115308820687950002
 ```
 
-**Resultado:** o Claude explica que é uma animação 3D de um sachê de matcha que cai, rasga, explode em pó e revela a frase final, e entrega os dados que o `designeer_get` trouxe:
+**Result:** Claude explains that it's a 3D animation of a matcha sachet that falls, tears open, bursts into powder and reveals the closing line, and hands back what `designeer_get` returned:
 
 ```jsonc
 {
@@ -64,119 +80,119 @@ o que é isso? https://designeer.xyz/finds/andreaskruszaki-2115308820687950002
     "posted": "2026-10-28"
   },
   "colours": ["#E9EDEA", "#02541C", "#177A35", "#379953", "#6C8A75"],
-  "related": [ /* 8 finds parecidos */ ]
+  "related": [ /* 8 similar finds */ ]
 }
 ```
 
-Junto vêm o still do vídeo e, com `frames: 4`, a sequência do movimento como imagem, então o Claude **vê** a animação e consegue explicar ou recriar a técnica.
+With `frames: 4`, the video's still and the motion sequence come along as images, so Claude actually **sees** the animation and can explain or rebuild the technique.
 
-### Mais prompts pra testar
+### More prompts to try
 
 ```text
-me acha 5 referências de dashboard escuro no designeer
+find me 5 dark dashboard references on designeer
 ```
 
 ```text
-quais fontes o designeer tem pra landing page de fintech?
+which fonts does designeer list for a fintech landing page?
 ```
 
 ```text
-pega a paleta desse find e monta os tokens CSS pro meu projeto:
-https://designeer.xyz/finds/<slug-do-find>
+take the palette from this find and turn it into CSS tokens for my project:
+https://designeer.xyz/finds/<find-slug>
 ```
 
 ```text
-abre o site do Linear e me dá o card de pricing em HTML + CSS
+open the Linear website and give me the pricing card as HTML + CSS
 ```
 
 ```text
-me mostra os finds de motion dessa semana e faz um resumo de cada técnica
+show me this week's motion finds and summarize the technique behind each one
 ```
 
-> **Dica:** pra recriar algo, peça a **técnica** com conteúdo teu. A mecânica de uma animação é livre pra estudar; capa, logo, marca e texto do autor não.
+> **Tip:** when rebuilding something, ask for the **technique** with your own content. The mechanics of an animation are free to study; the author's covers, logos, branding and copy are not.
 
 ## Tools
 
-| Tool | O que faz |
+| Tool | What it does |
 |---|---|
-| `designeer_search` | Busca no catálogo inteiro, com filtro opcional por coleção |
-| `designeer_browse` | Lista uma coleção na ordem curada, com categoria e paginação |
-| `designeer_get` | Detalhes de um listing ou find: site, categoria, preço, **paleta em hex**, criador, post original, relacionados |
-| `designeer_finds` | Últimos finds, com filtro por texto |
-| `designeer_media` | Imagens em alta e still de vídeo, devolvidas pro Claude **ver**. Com `frames > 0` + ffmpeg, extrai frames do motion |
-| `designeer_capture` | Abre **qualquer URL** no teu Chrome/Edge, tira print da página inteira e lê como ela é feita: cores, fontes, escala, raios, sombras, CSS vars, seções, grids e a receita de botões, cards, inputs e badges |
-| `designeer_component` | **Copia um componente ou seção como código**: HTML + CSS limpos, print do original e uma prévia `.html` standalone. Acha por seletor ou por texto + tipo (`text: "Pro", kind: "card"`) |
-| `designeer_status` | Diz se está em modo live ou offline e quantos itens tem no índice |
+| `designeer_search` | Searches the whole catalog, with an optional collection filter |
+| `designeer_browse` | Lists a collection in curated order, with category and pagination |
+| `designeer_get` | Details for a listing or find: website, category, pricing, **hex palette**, creator, original post, related items |
+| `designeer_finds` | Latest finds, with a text filter |
+| `designeer_media` | High-res images and video stills, returned for Claude to **see**. With `frames > 0` + ffmpeg, extracts motion frames |
+| `designeer_capture` | Opens **any URL** in your Chrome/Edge, takes a full-page screenshot and reads how it's built: colors, fonts, type scale, radii, shadows, CSS vars, sections, grids, and the recipe for buttons, cards, inputs and badges |
+| `designeer_component` | **Copies a component or section as code**: clean HTML + CSS, a screenshot of the original and a standalone `.html` preview. Finds it by selector or by text + kind (`text: "Pro", kind: "card"`) |
+| `designeer_status` | Tells whether it's running live or offline and how many items the index holds |
 
-**Nada fica salvo por padrão.** Prints e imagens vão direto pro Claude. Vídeo, que precisa de arquivo pro ffmpeg, vai pra uma pasta temporária apagada no fim. Pra guardar, peça com `save: true`, que salva em `~/designeer-media`.
+**Nothing is saved by default.** Screenshots and images go straight to Claude. Videos, which ffmpeg needs as files, go to a temp folder that's deleted afterwards. To keep them, ask with `save: true`, which saves to `~/designeer-media`.
 
-## Instalar
+## Install
 
-Requer **Node 18+** e **Chrome ou Edge** instalado (pro `designeer_capture`). O ffmpeg é opcional, só pra extrair frames de motion.
+Requires **Node 18+** and **Chrome or Edge** (for `designeer_capture`). ffmpeg is optional, only for extracting motion frames.
 
 ```bash
 git clone https://github.com/G4rutti/designeer-mcp.git
 cd designeer-mcp
 npm install
-npm run check   # testa tudo e mostra se tá live ou offline
+npm run check   # tests everything and tells you if it's live or offline
 ```
 
 ### Claude Code
 
 ```bash
-claude mcp add designeer --scope user -- node "/caminho/para/designeer-mcp/src/server.js"
+claude mcp add designeer --scope user -- node "/path/to/designeer-mcp/src/server.js"
 ```
 
 ### Claude Desktop
 
-Em `claude_desktop_config.json` (Settings → Developer → Edit Config):
+In `claude_desktop_config.json` (Settings → Developer → Edit Config):
 
 ```json
 {
   "mcpServers": {
     "designeer": {
       "command": "node",
-      "args": ["/caminho/para/designeer-mcp/src/server.js"]
+      "args": ["/path/to/designeer-mcp/src/server.js"]
     }
   }
 }
 ```
 
-No Windows, use `/` ou `\\` no caminho. Reinicie o Desktop depois de salvar.
+On Windows, use `/` or `\\` in the path. Restart the app after saving.
 
-### Variáveis opcionais
+### Optional environment variables
 
-| Variável | Pra quê |
+| Variable | Purpose |
 |---|---|
-| `DESIGNEER_OFFLINE=1` | Força o modo offline |
-| `DESIGNEER_CACHE_DIR` | Muda a pasta do cache do índice |
-| `DESIGNEER_MEDIA_DIR` | Muda onde prints e mídias são salvos (padrão `~/designeer-media`) |
-| `DESIGNEER_UA` | Troca o User-Agent |
+| `DESIGNEER_OFFLINE=1` | Forces offline mode |
+| `DESIGNEER_CACHE_DIR` | Changes the index cache folder |
+| `DESIGNEER_MEDIA_DIR` | Changes where screenshots and media are saved (default `~/designeer-media`) |
+| `DESIGNEER_UA` | Overrides the User-Agent |
 
-## Live × offline
+## Live vs. offline
 
-O site fica atrás do Cloudflare, e os endpoints dinâmicos (API e `.md`) mostram desafio pra IP de datacenter ou VPN. Por isso o servidor tem dois modos:
+The site sits behind Cloudflare, and its dynamic endpoints (API and `.md`) challenge datacenter and VPN IPs. So the server has two modes:
 
-- **live**: API + markdown completos. É o que roda na tua máquina com internet de casa.
-- **offline**: quando o Cloudflare barra, ele cai sozinho num índice montado do `sitemap.xml` + `llms-full.txt`, que são estáticos e sempre passam. Tem todas as URLs e finds, mas nome e tagline só de parte deles, sem paleta nem site. Fica em cache em `~/.cache/designeer-mcp` por 12h.
+- **live**: full API + markdown. This is what you get on a home connection.
+- **offline**: when Cloudflare blocks, it falls back on its own to an index built from `sitemap.xml` + `llms-full.txt`, which are static and always pass. It has every URL and find, but names and taglines for only some of them, and no palettes or websites. It's cached in `~/.cache/designeer-mcp` for 12h.
 
-A mídia vem do `cdn.designeer.xyz`, que não tem desafio. `designeer_media` em finds funciona até offline; em listings precisa do live.
+Media comes from `cdn.designeer.xyz`, which has no challenge. `designeer_media` works on finds even offline; on listings it needs live mode.
 
-## Da referência ao código
+## From reference to code
 
-O Designeer não guarda o design dos sites, ele **aponta** pra eles. O fluxo que funciona pra motion, print estático e tela de produto:
+Designeer doesn't store a site's design, it **points** to it. The flow that works for motion, static shots and product screens:
 
-1. **Achar**: `designeer_search "dashboard"`, `designeer_browse inspiration` ou `designeer_finds`
-2. **Ler**: `designeer_get` devolve o site oficial e a paleta em hex
-3. **Ver**: `designeer_media` pra finds (com `frames: 4` no motion), `designeer_capture` pra um site ou tela específica
-4. **Copiar**: o `capture` lista componentes com seletor; passa um deles pro `designeer_component` e recebe HTML + CSS
+1. **Find**: `designeer_search "dashboard"`, `designeer_browse inspiration` or `designeer_finds`
+2. **Read**: `designeer_get` returns the official website and the hex palette
+3. **See**: `designeer_media` for finds (with `frames: 4` on motion), `designeer_capture` for a site or a specific screen
+4. **Copy**: `capture` lists components with selectors; pass one to `designeer_component` and get HTML + CSS back
 
-O que a cópia não pega: `:hover`/`:focus`, animações e `::before`/`::after`. Use como base: troque cores e fontes pelos tokens do teu projeto e não reaproveite logo, imagem ou texto do autor. Página atrás de login (Mobbin logado, por exemplo) não funciona.
+What the copy doesn't capture: `:hover`/`:focus`, animations and `::before`/`::after`. Treat it as a starting point: swap colors and fonts for your project's tokens, and don't reuse the author's logo, images or copy. Pages behind a login (a signed-in Mobbin, for example) don't work.
 
-## Atribuição
+## Attribution
 
-Os trabalhos são de quem fez. Toda resposta traz o lembrete do `ai.txt`: citar o Designeer com link pra página canônica e creditar o criador como a página nomeia. Use como **referência**, não como cópia.
+The work belongs to the people who made it. Every response carries the `ai.txt` reminder: cite Designeer with a link to the canonical page and credit the creator as the page names them. Use it as a **reference**, not a copy.
 
-## Licença
+## License
 
-[MIT](LICENSE) © 2026 Davi Garutti Diniz. Projeto independente, sem vínculo com o Designeer.
+[MIT](LICENSE) © 2026 Davi Garutti Diniz. An independent project, not affiliated with Designeer.

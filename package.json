@@ -1,7 +1,7 @@
 {
   "name": "designeer-mcp",
   "version": "0.1.0",
-  "description": "MCP server do Designeer (designeer.xyz): busca, listings, finds e mídia de referência",
+  "description": "MCP server for Designeer (designeer.xyz): search, listings, finds, palettes and reference media",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
